@@ -44,3 +44,36 @@ fn test_overwrite_entry() {
     pb.add("Alice", "999-1111");
     assert_eq!(pb.lookup("Alice"), Some(&"999-1111".to_string()));
 }
+
+#[test]
+fn test_multiple_entries() {
+    let mut pb = Phonebook::new();
+    pb.add("Alice", "111");
+    pb.add("Bob", "222");
+    pb.add("Carol", "333");
+    assert_eq!(pb.lookup("Bob"), Some(&"222".to_string()));
+}
+
+#[test]
+fn test_remove_then_readd() {
+    let mut pb = Phonebook::new();
+    pb.add("Dave", "555");
+    pb.remove("Dave");
+    pb.add("Dave", "999");
+    assert_eq!(pb.lookup("Dave"), Some(&"999".to_string()));
+}
+
+#[test]
+fn test_lookup_case_sensitive() {
+    let mut pb = Phonebook::new();
+    pb.add("alice", "123");
+    assert_eq!(pb.lookup("Alice"), None);
+}
+
+#[test]
+fn test_remove_returns_false_second_time() {
+    let mut pb = Phonebook::new();
+    pb.add("Eve", "000");
+    pb.remove("Eve");
+    assert!(!pb.remove("Eve"));
+}

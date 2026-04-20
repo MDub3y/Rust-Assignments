@@ -26,3 +26,31 @@ fn test_zeros() {
 fn test_max() {
     assert_eq!(pack_u16(u16::MAX, u16::MAX), u32::MAX);
 }
+
+#[test]
+fn test_pack_high_only() {
+    assert_eq!(pack_u16(0xFFFF, 0x0000), 0xFFFF0000);
+}
+
+#[test]
+fn test_pack_low_only() {
+    assert_eq!(pack_u16(0x0000, 0xFFFF), 0x0000FFFF);
+}
+
+#[test]
+fn test_roundtrip_max() {
+    let packed = pack_u16(u16::MAX, u16::MAX);
+    assert_eq!(unpack_u32(packed), (u16::MAX, u16::MAX));
+}
+
+#[test]
+fn test_roundtrip_zeros() {
+    let packed = pack_u16(0, 0);
+    assert_eq!(unpack_u32(packed), (0, 0));
+}
+
+#[test]
+fn test_high_word() {
+    let (high, _) = unpack_u32(0xABCD0000);
+    assert_eq!(high, 0xABCD);
+}

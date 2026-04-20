@@ -29,3 +29,23 @@ fn test_boundary_3() {
 fn test_boundary_20() {
     assert_eq!(validate_username(&"a".repeat(20)), Ok(()));
 }
+
+#[test]
+fn test_with_underscore() {
+    assert_eq!(validate_username("hello_world"), Ok(()));
+}
+
+#[test]
+fn test_space_invalid() {
+    assert!(validate_username("hello world").is_err());
+}
+
+#[test]
+fn test_too_long_by_one() {
+    assert_eq!(validate_username(&"a".repeat(21)), Err(ValidationError::TooLong));
+}
+
+#[test]
+fn test_exactly_3_chars() {
+    assert_eq!(validate_username("xyz"), Ok(()));
+}

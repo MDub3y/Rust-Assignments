@@ -35,3 +35,18 @@ fn test_all_equal() {
 fn test_all_negative() {
     assert_eq!(find_max(&[-3, -1, -5]), Some(&-1));
 }
+
+#[test]
+fn test_two_elements() {
+    assert_eq!(find_max(&[1, 2]), Some(&2));
+}
+
+#[test]
+fn test_descending_order() {
+    assert_eq!(find_max(&[5, 4, 3, 2, 1]), Some(&5));
+}
+
+#[test]
+fn test_max_at_start() {
+    assert_eq!(find_max(&[100, 1, 2, 3]), Some(&100));
+}

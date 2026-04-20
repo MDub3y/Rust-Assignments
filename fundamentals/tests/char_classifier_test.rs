@@ -24,3 +24,28 @@ fn test_special() {
 fn test_uppercase() {
     assert_eq!(classify_char('Z'), "alphabetic");
 }
+
+#[test]
+fn test_tab_whitespace() {
+    assert_eq!(classify_char('\t'), "whitespace");
+}
+
+#[test]
+fn test_newline_whitespace() {
+    assert_eq!(classify_char('\n'), "whitespace");
+}
+
+#[test]
+fn test_zero_digit() {
+    assert_eq!(classify_char('0'), "numeric");
+}
+
+#[test]
+fn test_nine_digit() {
+    assert_eq!(classify_char('9'), "numeric");
+}
+
+#[test]
+fn test_exclamation_other() {
+    assert_eq!(classify_char('!'), "other");
+}

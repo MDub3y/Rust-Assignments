@@ -19,3 +19,33 @@ fn test_square() {
 fn test_identity() {
     assert_eq!(apply_twice(5, |x| x), 5);
 }
+
+#[test]
+fn test_subtract() {
+    assert_eq!(apply_twice(10, |x| x - 1), 8);
+}
+
+#[test]
+fn test_negate() {
+    assert_eq!(apply_twice(5, |x| -x), 5);
+}
+
+#[test]
+fn test_add_ten() {
+    assert_eq!(apply_twice(0, |x| x + 10), 20);
+}
+
+#[test]
+fn test_triple() {
+    assert_eq!(apply_twice(1, |x| x * 3), 9);
+}
+
+#[test]
+fn test_negative_input() {
+    assert_eq!(apply_twice(-3, |x| x + 1), -1);
+}
+
+#[test]
+fn test_halve() {
+    assert_eq!(apply_twice(100, |x| x / 2), 25);
+}

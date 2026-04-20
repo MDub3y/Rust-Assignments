@@ -24,3 +24,28 @@ fn test_empty() {
 fn test_float_string() {
     assert!(parse_int("3.14").is_err());
 }
+
+#[test]
+fn test_zero() {
+    assert_eq!(parse_int("0"), Ok(0));
+}
+
+#[test]
+fn test_large_positive() {
+    assert_eq!(parse_int("1000000"), Ok(1000000));
+}
+
+#[test]
+fn test_large_negative() {
+    assert_eq!(parse_int("-999"), Ok(-999));
+}
+
+#[test]
+fn test_whitespace_invalid() {
+    assert!(parse_int(" 5").is_err());
+}
+
+#[test]
+fn test_overflow_string() {
+    assert!(parse_int("99999999999999999999").is_err());
+}

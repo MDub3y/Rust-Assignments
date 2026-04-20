@@ -29,3 +29,25 @@ fn test_toggle_off() {
 fn test_clear_already_clear() {
     assert_eq!(clear_bit(0b0000, 2), 0b0000);
 }
+
+#[test]
+fn test_set_bit_0() {
+    assert_eq!(set_bit(0b0000, 0), 0b0001);
+}
+
+#[test]
+fn test_clear_bit_0() {
+    assert_eq!(clear_bit(0b1111, 0), 0b1110);
+}
+
+#[test]
+fn test_toggle_twice_identity() {
+    let v = toggle_bit(toggle_bit(0b1010, 2), 2);
+    assert_eq!(v, 0b1010);
+}
+
+#[test]
+fn test_set_multiple_bits() {
+    let v = set_bit(set_bit(0b0000, 0), 1);
+    assert_eq!(v, 0b0011);
+}

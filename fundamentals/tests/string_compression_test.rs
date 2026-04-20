@@ -34,3 +34,18 @@ fn test_tie_returns_original() {
 fn test_two_chars_returns_original() {
     assert_eq!(compress("ab"), "ab");
 }
+
+#[test]
+fn test_multiple_groups() {
+    assert_eq!(compress("aabb"), "a2b2");
+}
+
+#[test]
+fn test_long_run() {
+    assert_eq!(compress("zzzzzzzzzz"), "z10");
+}
+
+#[test]
+fn test_alternating() {
+    assert_eq!(compress("ababab"), "ababab");
+}

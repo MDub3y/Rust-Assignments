@@ -29,3 +29,47 @@ fn test_integer_keys() {
     assert_eq!(m.len(), 3);
     assert_eq!(m.get(&2), Some(&"two"));
 }
+
+#[test]
+fn test_missing_key_is_none() {
+    use intermediate::hash_map;
+    let m: HashMap<&str, i32> = hash_map! { "a" => 1 };
+    assert_eq!(m.get("z"), None);
+}
+
+#[test]
+fn test_overwrite_key() {
+    use intermediate::hash_map;
+    let mut m: HashMap<&str, i32> = hash_map! { "x" => 1 };
+    m.insert("x", 99);
+    assert_eq!(m.get("x"), Some(&99));
+}
+
+#[test]
+fn test_two_pairs() {
+    use intermediate::hash_map;
+    let m: HashMap<i32, i32> = hash_map! { 10 => 100, 20 => 200 };
+    assert_eq!(m.get(&10), Some(&100));
+    assert_eq!(m.get(&20), Some(&200));
+}
+
+#[test]
+fn test_length_correct() {
+    use intermediate::hash_map;
+    let m: HashMap<&str, i32> = hash_map! { "a" => 1, "b" => 2, "c" => 3 };
+    assert_eq!(m.len(), 3);
+}
+
+#[test]
+fn test_contains_key() {
+    use intermediate::hash_map;
+    let m: HashMap<&str, i32> = hash_map! { "rust" => 42 };
+    assert!(m.contains_key("rust"));
+}
+
+#[test]
+fn test_value_zero() {
+    use intermediate::hash_map;
+    let m: HashMap<&str, i32> = hash_map! { "zero" => 0 };
+    assert_eq!(m.get("zero"), Some(&0));
+}

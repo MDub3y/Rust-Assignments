@@ -43,3 +43,33 @@ fn test_zero_size_alloc() {
     assert_eq!(slice.len(), 0);
     assert_eq!(bump.cursor, 0);
 }
+
+#[test]
+fn test_alloc_one_byte() {
+    let mut bump = BumpAllocator::new();
+    let slice = bump.alloc(1).unwrap();
+    assert_eq!(slice.len(), 1);
+    assert_eq!(bump.cursor, 1);
+}
+
+#[test]
+fn test_three_allocs_cursor() {
+    let mut bump = BumpAllocator::new();
+    bump.alloc(10).unwrap();
+    bump.alloc(20).unwrap();
+    bump.alloc(30).unwrap();
+    assert_eq!(bump.cursor, 60);
+}
+
+#[test]
+fn test_over_limit_fails() {
+    let mut bump = BumpAllocator::new();
+    assert!(bump.alloc(1025).is_err());
+}
+
+#[test]
+fn test_alloc_returns_correct_length() {
+    let mut bump = BumpAllocator::new();
+    let slice = bump.alloc(64).unwrap();
+    assert_eq!(slice.len(), 64);
+}

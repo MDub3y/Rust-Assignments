@@ -38,3 +38,31 @@ fn test_too_long() {
     let result = validate_packet(&[0u8; 12]);
     assert!(matches!(result, Err(DataError::InvalidLength { .. })));
 }
+
+#[test]
+fn test_empty_packet_invalid_length() {
+    assert!(validate_packet(&[]).is_err());
+}
+
+#[test]
+fn test_valid_returns_ok() {
+    let mut packet = [0u8; 10];
+    packet[9] = packet[..9].iter().fold(0u8, |acc, &b| acc ^ b);
+    assert!(validate_packet(&packet).is_ok());
+}
+
+#[test]
+fn test_invalid_length_has_expected() {
+    let result = validate_packet(&[1, 2, 3]);
+    if let Err(DataError::InvalidLength { expected, .. }) = result {
+        assert_eq!(expected, 10);
+    }
+}
+
+#[test]
+fn test_invalid_length_has_actual() {
+    let result = validate_packet(&[1, 2, 3]);
+    if let Err(DataError::InvalidLength { actual, .. }) = result {
+        assert_eq!(actual, 3);
+    }
+}

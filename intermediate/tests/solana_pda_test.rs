@@ -31,3 +31,43 @@ fn test_multiple_seeds() {
     assert_eq!(pda[0], 0xFF);
     assert_eq!(pda[1], 0);
 }
+
+#[test]
+fn test_result_is_32_bytes() {
+    let program_id = [1u8; 32];
+    let pda = derive_pda(program_id, &[]);
+    assert_eq!(pda.len(), 32);
+}
+
+#[test]
+fn test_single_zero_seed() {
+    let program_id = [0xAA; 32];
+    let seeds: &[&[u8]] = &[&[0u8]];
+    let pda = derive_pda(program_id, seeds);
+    assert_eq!(pda[0], 0xAA);
+}
+
+#[test]
+fn test_xor_with_program_id() {
+    let program_id = [0xFF; 32];
+    let seeds: &[&[u8]] = &[&[0xFF; 32]];
+    let pda = derive_pda(program_id, seeds);
+    assert_eq!(pda, [0u8; 32]);
+}
+
+#[test]
+fn test_empty_seed_slice() {
+    let program_id = [0x55; 32];
+    let seeds: &[&[u8]] = &[&[]];
+    let pda = derive_pda(program_id, seeds);
+    assert_eq!(pda, program_id);
+}
+
+#[test]
+fn test_deterministic() {
+    let program_id = [1u8; 32];
+    let seeds: &[&[u8]] = &[&[2u8]];
+    let pda1 = derive_pda(program_id, seeds);
+    let pda2 = derive_pda(program_id, seeds);
+    assert_eq!(pda1, pda2);
+}
