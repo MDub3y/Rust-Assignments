@@ -12,5 +12,21 @@
 use std::thread;
 
 pub fn threaded_sum(v: Vec<i32>) -> i32 {
-    todo!()
+
+    let mid = v.len() / 2;
+    let mut v2 = v;
+    let v1 = v2.split_off(mid);
+
+    let handle1 = thread::spawn( move || {
+      v1.iter().fold(0i32, |acc, &x| acc + x)
+    });
+
+    let handle2 = thread::spawn(move || {
+      v2.iter().fold(0i32, |acc, &x| acc + x)
+    });
+
+    let res1 = handle1.join().unwrap();
+    let res2 = handle2.join().unwrap();
+
+    res1 + res2
 }
