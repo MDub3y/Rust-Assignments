@@ -18,6 +18,5 @@ pub async fn oneshot_demo() -> String {
       let _ = tx.send("done".to_string());
     });
 
-    let val = rx.await.unwrap();
-    val
+    rx.await.unwrap()
 }

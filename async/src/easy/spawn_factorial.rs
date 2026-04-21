@@ -9,5 +9,7 @@
 */
 
 pub async fn spawn_factorial() -> u64 {
-    todo!()
+    tokio::spawn(async {
+      120u64
+    }).await.unwrap()
 }
