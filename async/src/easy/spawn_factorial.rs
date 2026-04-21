@@ -9,7 +9,9 @@
 */
 
 pub async fn spawn_factorial() -> u64 {
-    tokio::spawn(async {
-      120u64
-    }).await.unwrap()
+  let handle = tokio::spawn(async {
+    (1..=5).product::<u64>()
+  });
+
+  handle.await.unwrap()
 }
