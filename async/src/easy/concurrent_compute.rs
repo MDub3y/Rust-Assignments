@@ -16,5 +16,7 @@ where
     F1: Future<Output = i32>,
     F2: Future<Output = i32>,
 {
-    todo!()
+    let (res1, res2) = tokio::join!(f1, f2);
+
+    res1 + res2
 }
