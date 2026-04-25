@@ -13,5 +13,29 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 
 pub fn multithreaded_counter() -> i32 {
-    todo!()
+    let counter = Arc::new(Mutex::new(0));
+    let mut handles = vec![];
+
+    for _ in 1..=10 {
+      let count = Arc::clone(&counter);
+      let handle = thread::spawn(move ||{
+        for _ in 1..=100 {
+          let mut num = count.lock().unwrap();
+          *num += 1;
+        }
+      });
+
+      handles.push(handle);
+    }
+
+    for handle in handles {
+      handle.join().unwrap();
+    }
+
+    // mutex guard i sdropped here with the semicolon
+    // this can't be the tail expression, as in that case,
+    // the counter is cropped while the mutex guard is still alive!
+    let res = *counter.lock().unwrap();
+
+    res
 }
