@@ -11,96 +11,42 @@
 */
 
 use std::collections::HashMap;
+use std::sync::Arc;
 use std::thread;
 
 pub fn parallel_word_count(lines: Vec<String>) -> HashMap<String, usize> {
-    let mut finalMap: HashMap<String, usize> = HashMap::new();
-
-    let len = lines.len();
-
-    let part1 = lines[0..len / 4].to_vec();
-    let part2 = lines[len / 4..len / 2].to_vec();
-    let part3 = lines[len / 2..3 * len / 4].to_vec();
-    let part4 = lines[3 * len / 4..].to_vec();
-
+    let lines = Arc::new(lines);
     let mut handles = vec![];
 
-    let handle1 = thread::spawn(move || {
-        let mut local_map: HashMap<String, usize> = HashMap::new();
+    for i in 0..4 {
+        let lines_share = Arc::clone(&lines);
+        let handle = thread::spawn(move || {
+            let len = lines_share.len();
+            
+            let start = i * len / 4;
+            let end = if i == 3 { len } else { (i+1) * len / 4 };
+            let my_part = &lines_share[start..end];
 
-        for line in part1 {
-            for word in line.split_whitespace() {
-                if let Some(val) = local_map.get_mut(word) {
-                    *val += 1;
-                } else {
-                    local_map.insert(word.to_string(), 1);
+            let mut local_map = HashMap::new();
+            for line in my_part {
+                for word in line.split_whitespace() {
+                    *local_map.entry(word.to_string()).or_insert(0) += 1;
                 }
             }
-        }
-        local_map
-    });
-    handles.push(handle1);
+            local_map
+        });
+        handles.push(handle);
+    }
 
-    let handle2 = thread::spawn(move || {
-        let mut local_map: HashMap<String, usize> = HashMap::new();
-        for line in part2 {
-            for word in line.split_whitespace() {
-                if let Some(val) = local_map.get_mut(word) {
-                    *val += 1;
-                } else {
-                    local_map.insert(word.to_string(), 1);
-                }
-            }
-        }
-        local_map
-    });
-    handles.push(handle2);
-
-    // Thread 3
-    let handle3 = thread::spawn(move || {
-        let mut local_map: HashMap<String, usize> = HashMap::new();
-        for line in part3 {
-            for word in line.split_whitespace() {
-                if let Some(val) = local_map.get_mut(word) {
-                    *val += 1;
-                } else {
-                    local_map.insert(word.to_string(), 1);
-                }
-            }
-        }
-        local_map
-    });
-    handles.push(handle3);
-
-    // Thread 4
-    let handle4 = thread::spawn(move || {
-        let mut local_map: HashMap<String, usize> = HashMap::new();
-        for line in part4 {
-            for word in line.split_whitespace() {
-                if let Some(val) = local_map.get_mut(word) {
-                    *val += 1;
-                } else {
-                    local_map.insert(word.to_string(), 1);
-                }
-            }
-        }
-        local_map
-    });
-    handles.push(handle4);
+    let mut final_map = HashMap::new();
 
     for handle in handles {
-        // Wait for the thread to finish and get its local_map
         let local_res = handle.join().unwrap();
 
-        // Merge the local counts into the finalMap
         for (word, count) in local_res {
-            if let Some(val) = finalMap.get_mut(&word) {
-                *val += count;
-            } else {
-                finalMap.insert(word, count);
-            }
+            *final_map.entry(word).or_insert(0) += count;
         }
     }
 
-    finalMap
+    final_map
 }
