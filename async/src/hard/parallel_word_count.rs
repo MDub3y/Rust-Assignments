@@ -15,35 +15,40 @@ use std::sync::Arc;
 use std::thread;
 
 pub fn parallel_word_count(lines: Vec<String>) -> HashMap<String, usize> {
-    let lines = Arc::new(lines);
-    let mut handles = vec![];
-
-    for i in 0..4 {
-        let lines_share = Arc::clone(&lines);
-        let handle = thread::spawn(move || {
-            let len = lines_share.len();
-            
-            let start = i * len / 4;
-            let end = if i == 3 { len } else { (i+1) * len / 4 };
-            let my_part = &lines_share[start..end];
-
-            let mut local_map = HashMap::new();
-            for line in my_part {
-                for word in line.split_whitespace() {
-                    *local_map.entry(word.to_string()).or_insert(0) += 1;
-                }
-            }
-            local_map
-        });
-        handles.push(handle);
+    let len = lines.len();
+    if len == 0 {
+        return HashMap::new();
     }
 
+    let num_threads = 4;
+    let chunk_size = (len + num_threads - 1) / num_threads;
+
+    let partial_results = thread::scope(|s| {
+        let mut handles = vec![];
+
+        for chunk in lines.chunks(chunk_size) {
+            let handle = s.spawn(move || {
+                let mut local_map = HashMap::new();
+                for line in chunk {
+                    for word in line.split_whitespace() {
+                        // The map needs to own the String to store it
+                        *local_map.entry(word.to_string()).or_insert(0) += 1;
+                    }
+                }
+                local_map
+            });
+            handles.push(handle);
+        }
+
+        handles
+            .into_iter()
+            .map(|h| h.join().unwrap())
+            .collect::<Vec<HashMap<String, usize>>>()
+    });
+
     let mut final_map = HashMap::new();
-
-    for handle in handles {
-        let local_res = handle.join().unwrap();
-
-        for (word, count) in local_res {
+    for local_map in partial_results {
+        for (word, count) in local_map {
             *final_map.entry(word).or_insert(0) += count;
         }
     }
