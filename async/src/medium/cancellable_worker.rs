@@ -16,5 +16,18 @@ use std::thread;
 use std::time::Duration;
 
 pub fn cancellable_worker() {
-    todo!()
+    let f = Arc::new(AtomicBool::new(false));
+    let sharedFlag = Arc::clone(&f);
+
+    let handle = thread::spawn(move || {
+      while !sharedFlag.load(Ordering::Relaxed) {
+        thread::sleep(Duration::from_millis(5));
+      }
+    });
+
+    thread::sleep(Duration::from_millis(50));
+
+    f.store(true, Ordering::Relaxed);
+
+    handle.join().unwrap();
 }
