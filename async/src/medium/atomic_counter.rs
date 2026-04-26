@@ -31,10 +31,7 @@ pub fn atomic_counter() -> i32 {
   for handle in handles {
     handle.join().unwrap();
   }
-
-  // mutex guard i sdropped here with the semicolon
-  // this can't be the tail expression, as in that case,
-  // the counter is cropped while the mutex guard is still alive!
+  
   let res = counter.load(Ordering::SeqCst);
 
   res
