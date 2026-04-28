@@ -16,9 +16,5 @@ pub async fn timeout_wrapper<F, T>(f: F, duration: Duration) -> Result<T, String
 where
     F: Future<Output = T>,
 {
-    match timeout(duration, f).await {
-        Ok(value) => Ok(value),
-        
-        Err(_) => Err("Timeout".to_string()),
-    }
+    timeout(duration, f).await.map_err(|_| "Timeout".to_string())
 }
