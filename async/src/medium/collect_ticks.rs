@@ -12,5 +12,14 @@
 use tokio::time::{interval, Duration, Instant};
 
 pub async fn collect_ticks() -> Vec<Instant> {
-    todo!()
+    let mut timer = interval(Duration::from_millis(1));
+    let mut ticks = Vec::new();
+
+    for _ in 0..5 {
+      let now = timer.tick().await;
+
+      ticks.push(now);
+    }
+
+    ticks
 }
