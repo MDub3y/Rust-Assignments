@@ -20,10 +20,15 @@ pub struct RateLimiter {
 
 impl RateLimiter {
     pub fn new(permits: usize) -> Self {
-        todo!()
+        Self {
+            semaphore: Arc::new(Semaphore::new(permits)),
+        }
     }
 
     pub async fn acquire(&self) {
-        todo!()
+        let permit = self.semaphore.acquire()
+            .await.unwrap();
+
+        permit.forget();
     }
 }
