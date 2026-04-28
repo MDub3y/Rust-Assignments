@@ -18,13 +18,35 @@ pub struct TaskQueue {
 
 impl TaskQueue {
     pub fn new(worker_count: usize) -> Self {
-        todo!()
+        let (sender, mut receiver) = mpsc::channel::<Box<dyn FnOnce() + Send + 'static>>(100);
+
+        let receiver = Arc::new(tokio::sync::Mutex::new(receiver));
+
+        for _ in 0..worker_count {
+            let rx = Arc::clone(&receiver);
+
+            tokio::spawn(async move {
+                loop {
+                    let task = {
+                        let mut lock = rx.lock().await;
+                        lock.recv().await
+                    };
+
+                    match task {
+                        Some(f) => { f(); }
+                        None => { break; }
+                    }
+                }
+            });
+        }
+
+        Self { sender }
     }
 
     pub async fn push<F>(&self, f: F)
     where
         F: FnOnce() + Send + 'static,
     {
-        todo!()
+        let _ = self.sender.send(Box::new(f)).await;
     }
 }
