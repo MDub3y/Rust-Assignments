@@ -10,5 +10,12 @@
 */
 
 pub fn rotate_left(arr: [u8; 8], count: usize) -> [u8; 8] {
-    todo!()
+  let mut result = [0u8; 8];
+  let len = 8;
+  let shift = count % len;
+
+  for i in 0..len {
+      result[i] = arr[(i + shift) % len];
+  }
+  result
 }
