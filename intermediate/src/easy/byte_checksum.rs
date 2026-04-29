@@ -9,10 +9,5 @@
 */
 
 pub fn compute_checksum(data: &[u8]) -> u8 {
-    let mut checksum: u8 = 0;
-
-    for &byte in data {
-      checksum ^= byte;
-    }
-    checksum
+    data.iter().fold(0, |acc, &byte| acc ^ byte)
 }
