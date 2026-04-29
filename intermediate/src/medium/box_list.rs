@@ -17,16 +17,27 @@ pub enum List {
 
 impl List {
     pub fn sum(&self) -> i32 {
-        match self {
-            List::Nil => 0,
-            List::Cons(val, next) => val + next.sum(),
+        let mut current = self;
+        let mut total = 0;
+
+        while let List::Cons(val, next) = current {
+            total += val;
+
+            current = next;
         }
+
+        total
     }
 
     pub fn len(&self) -> usize {
-        match self {
-            List::Nil => 0,
-            List::Cons(_, next) => 1 + next.len(),
+        let mut current = self;
+        let mut count = 0;
+
+        while let List::Cons(_, next) = current {
+            count += 1;
+
+            current = next;
         }
+        count
     }
 }
