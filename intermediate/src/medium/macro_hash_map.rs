@@ -11,6 +11,12 @@
 #[macro_export]
 macro_rules! hash_map {
     ($($key:expr => $val:expr),* $(,)?) => {
-        todo!()
+        {
+            let mut _map = std::collections::HashMap::new();
+            $(
+                _map.insert($key, $val);
+            )*
+            _map
+        }
     };
 }
