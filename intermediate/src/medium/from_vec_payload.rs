@@ -15,7 +15,12 @@ pub struct Payload {
 
 impl From<Vec<u16>> for Payload {
     fn from(v: Vec<u16>) -> Self {
-        let data = v.into_iter().flat_map(|val| val.to_be_bytes()).collect();
+        let mut data = Vec::with_capacity(v.len() * 2);
+
+        for val in v {
+            data.push((val >> 8) as u8);
+            data.push((val & 0xFF) as u8);
+        }
 
         Payload{ data }
     }
