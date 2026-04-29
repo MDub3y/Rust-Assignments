@@ -11,7 +11,7 @@
     cargo test --test custom_error_enum_test
 */
 
-use std::fmt;
+use std::fmt::{self, write};
 
 #[derive(Debug)]
 pub enum DataError {
@@ -22,12 +22,41 @@ pub enum DataError {
 
 impl fmt::Display for DataError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        todo!()
+        match self {
+            DataError::InvalidLength { expected, actual } => {
+                write!(f, "Invalid length: expected {}, got {}", expected, actual)
+            }
+            DataError::ChecksumMismatch => {
+                write!(f, "Checksum verification failed")
+            }
+            DataError::Utf8Error(e) => {
+                write!(f, "UTF-8 error: {}", e)
+            }
+        }
     }
 }
 
-impl std::error::Error for DataError {}
+impl std::error::Error for DataError {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        match self {
+            DataError::Utf8Error(e) => Some(e),
+            _ => None
+        }
+    }
+}
 
 pub fn validate_packet(data: &[u8]) -> Result<(), DataError> {
-    todo!()
+    if data.len() != 10 {
+        return Err(DataError::InvalidLength { expected: 10, actual: data.len() });
+    }
+
+    let calculated_checksum = data.iter().take(9).fold(0, |acc, &byte| acc ^ byte);
+
+    let provided_checksum = data[9];
+
+    if calculated_checksum != provided_checksum {
+        return Err(DataError::ChecksumMismatch);
+    }
+
+    Ok(())
 }
