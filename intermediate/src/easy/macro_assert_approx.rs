@@ -12,9 +12,13 @@
 #[macro_export]
 macro_rules! assert_approx_eq {
     ($a:expr, $b:expr) => {
-        todo!()
+        assert_approx_eq!($a, $b, 1e-10);
     };
     ($a:expr, $b:expr, $eps:expr) => {
-        todo!()
+        let (val_a, val_b, eps) = ($a as f64, $b as f64, $eps as f64);
+
+        if (val_a - val_b).abs() > eps {
+            panic!("assertion failed")
+        }
     };
 }

@@ -9,5 +9,5 @@
 */
 
 pub fn compute_checksum(data: &[u8]) -> u8 {
-    todo!()
+    data.iter().fold(0, |acc, &byte| acc ^ byte)
 }
