@@ -18,14 +18,17 @@ pub struct Counter {
 
 impl Counter {
     pub fn new(initial: i32) -> Self {
-        todo!()
+        Self {
+            value: RefCell::new(initial)
+        }
     }
 
     pub fn increment(&self) {
-        todo!()
+        let mut val = self.value.borrow_mut();
+        *val += 1;
     }
 
     pub fn get(&self) -> i32 {
-        todo!()
+        *self.value.borrow()
     }
 }
