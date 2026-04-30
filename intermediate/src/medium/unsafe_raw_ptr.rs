@@ -10,5 +10,9 @@
 */
 
 pub fn read_via_raw_pointer(value: &i32) -> i32 {
-    todo!()
+    let raw_ptr: *const i32 = value as *const i32;
+
+    unsafe {
+      *raw_ptr
+    }
 }
