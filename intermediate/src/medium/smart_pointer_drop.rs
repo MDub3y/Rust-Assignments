@@ -20,6 +20,8 @@ pub struct Logger {
 
 impl Drop for Logger {
     fn drop(&mut self) {
-        todo!()
+        if let Ok(mut count) = self.drop_count.lock() {
+            *count += 1;
+        }
     }
 }
