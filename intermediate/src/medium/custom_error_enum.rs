@@ -11,7 +11,7 @@
     cargo test --test custom_error_enum_test
 */
 
-use std::fmt::{self, write};
+use std::fmt::{self};
 
 #[derive(Debug)]
 pub enum DataError {
