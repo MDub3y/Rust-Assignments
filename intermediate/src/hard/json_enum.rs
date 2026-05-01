@@ -24,6 +24,25 @@ pub enum Value {
 
 impl Value {
     pub fn to_json_string(&self) -> String {
-        todo!()
+        match self {
+            Value::Null => "null".to_string(),
+            Value::Bool(b) => b.to_string(),
+            Value::Number(n) => n.to_string(),
+
+            Value::String(s) => format!("\"{}\"", s),
+
+            Value::Array(arr) => {
+                let elements: Vec<String> = arr.iter().map(|v| v.to_json_string()).collect();
+                format!("[{}]", elements.join(", "))
+            }
+
+            Value::Object(obj) => {
+                let mut pairs: Vec<String> = obj.iter().map(|(k,v)| format!("\"{}\": {}", k, v.to_json_string())).collect();
+
+                pairs.sort();
+                
+                format!("{{{}}}", pairs.join(", "))
+            }
+        }
     }
 }
